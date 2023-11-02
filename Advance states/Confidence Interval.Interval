@@ -1,0 +1,19 @@
+###--Confidence Interval---####
+rm(list=ls())
+n=16;xbr=c()
+meu=7;sgm=2
+M=100
+pop=rnorm(1000,7,2)
+for(i in 1:M){
+sam=sample(pop,n,replace=T)
+xbr[i]=mean(sam)
+}
+L1=xbr-qnorm(1-0.05/2)*sgm/sqrt(n)
+L2=xbr+qnorm(1-0.05/2)*sgm/sqrt(n)
+na=length(which(meu>=L1&meu<=L2))
+pr=na/M
+pr
+plot(1:M,L1,ylim=c(0,10),type="o",col="green",axes=F,ylab="interval estimates")
+lines(1:M,L2,type="o",col="skyblue")
+lines(1:M,rep(meu,M),col="red")
+axis(1,1:M)

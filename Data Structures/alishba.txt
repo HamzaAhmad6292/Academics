@@ -1,0 +1,280 @@
+/*
+#include<iostream>
+#include <fstream>
+#include<cstring>
+#include<string>
+#include<vector>
+#include<unordered_map>
+*/
+#include <bits/stdc++.h>
+
+using namespace std;
+
+class Node
+{
+    public:
+    string s;
+    vector<string>vec;
+    Node*left;
+    Node*right;
+    
+    //default constructor
+    Node(string ss,vector<string> v)
+    {
+        s=ss;
+        vec=v;
+        left=NULL;
+        right=NULL;
+    }
+};//END OF NODE CLASS
+
+class binarysearchtree
+{
+    private:
+    Node*root;
+    public:
+    //deafult constructor
+    binarysearchtree()
+    {
+        root=NULL;
+    }
+    binarysearchtree(Node*temp)
+    {
+        root=temp;
+    }
+    Node*rootcather()
+    {
+        return root;
+    }
+    void insertnode(Node*n)
+    {
+        Node*tree=root,*prev=root;
+        if(tree==NULL)
+        {
+            root=n;
+            return;
+        }
+        while(root!=NULL)
+        {
+            //basically we gona apply the concept of 
+            //binary tree for integer to binary tree of strings
+            //if word<tree
+            //move to left subtree
+            if (tree->s.compare(n->s)>0)
+            {
+                prev=tree;
+                tree=tree->left;
+            }
+            //basically we gona apply the concept of 
+            //binary tree for integer to binary tree of strings
+            //if word>tree
+            //move to right subtree
+            else if(tree->s.compare(n->s)<0)
+            {
+                prev=tree;
+                tree=tree->right;
+            }
+            else if(tree->s==n->s)
+            {
+                cout<<"KEYWORD PRE EXISTS "<<endl;
+            } 
+        }
+        if(prev->s.compare(n->s)>0)
+        {
+            prev->left=n;
+        }
+        if(prev->s.compare(n->s)<0)
+        {
+            prev->right=n;
+        }
+    }
+    //returns the no.of URLS ASSOCIATED TO THE GIVEN KEYWORD
+    int search_url(string sss)
+    {
+        Node*tree=root;
+        if(tree==NULL)
+        {
+            cout<<"TREE IS EMPTY,PLEASE GIVE SOME WATER"<<endl;
+            return 0;
+        }
+        while(tree!=NULL)
+        {
+          if (tree->s.compare(sss)>0)
+          {
+            tree=tree->left;
+          }
+          else if (tree->s.compare(sss)<0)
+          {
+            tree=tree->right;
+          }
+          else if(tree->s==sss)
+          {
+            cout<<"URLS FOR THIS KEYWORD FROM MY MEMORY"<<endl;
+            for(auto c:tree->vec)
+            //The auto keyword is a simple way to declare
+            // a variable that has a complicated type
+            {
+                cout<<c<<endl;
+            }
+            return tree->vec.size();
+          } 
+        }
+        return 0;
+    }
+    Node*helpsmallestkeyword(Node*nn)
+    {
+        
+        if(nn==NULL)
+        {
+            return NULL;
+        }
+        Node*prev=nn;
+        while(nn->left)
+        {
+            nn=nn->left;
+        }
+        return nn;
+    }
+
+void delete_node(Node*p,Node* nnn,string ssss)
+{
+    Node*tree=nnn,*prev=root;
+    if(tree==NULL)
+    {
+        cout<<"TREE EMPTY WAIT FOR THE RIGHT SEASON"<<endl;
+       return;    
+    }
+    if(tree->s==ssss)
+    {
+        Node*temp=helpsmallestkeyword(tree->right);
+        if(temp!=NULL)
+        {
+           tree->s=temp->s;
+           tree->vec=temp->vec;
+           delete_node(tree,tree->right,temp->s);
+        }
+        else
+        {
+            if(p->s==tree->s)
+            {
+                root=p->left;
+            }
+            else if(p->right!=NULL && p->right->s==tree->s)
+            {
+                p->right=tree->left;
+                delete(tree);
+
+            }
+            else if(p->left!=NULL && p->left->s==tree->s)
+            {
+                p->left=tree->left;
+                delete(tree);
+            }
+        }
+        return;
+    }
+while(tree!=NULL)
+{
+    if (tree->s.compare(ssss)>0)
+    {
+        prev=tree;
+        tree=tree->left;
+    }
+    else if(tree->s.compare(ssss)<0)
+    {
+        prev=tree;
+        tree=tree->right;
+    }
+    else if(tree->s==ssss)
+    {
+        Node*temp=helpsmallestkeyword(tree->right);
+        if(temp!=NULL)
+        {
+            tree->s=temp->s;
+            tree->vec=temp->vec;
+            delete_node(tree,tree->right,temp->s);
+        }
+        else
+        {
+            if(prev->right!=NULL && prev->right->s==tree->s)
+            {
+                prev->right=tree->left;
+                delete(tree);
+            }
+            else if(prev->left!=NULL && prev->left->s==tree->s)
+            {
+                prev->left=tree->left;
+                delete(tree);
+            }
+
+        }
+        return;
+       }
+      }
+     }
+    };
+    int main()
+    {
+        string file,temp,id,url,s,keyword;
+        int i=0;
+        int j;
+        cout<<"ENTER FILE NAME "<<endl;
+        cin>>file;
+        fstream ptr;
+        ptr.open(file,ios::in);
+        unordered_map<string,vector<string> >mp;
+        if(!ptr)
+        {
+            cout<<"UNABLE TO OPEN FILE"<<endl;
+        }
+        else
+        {
+            cout<<"FILE OPENED SUCCESFULLY"<<endl;
+        }
+        while(getline(ptr,temp))
+        {
+            if(temp.size()==0)
+                break;
+            stringstream chk(temp);
+            
+            getline(chk,id,' ');
+            getline(chk,url,' ');
+            getline(ptr,temp);
+            getline(ptr,temp);
+            stringstream chk2(temp);
+            while(getline(chk2,s,' '))
+            {
+                mp[s].push_back(url);
+            }
+            getline(ptr,temp);
+        }
+        binarysearchtree*treee=new binarysearchtree();
+        for(auto p:mp)
+        {
+            Node*nd=new Node(p.first,p.second);
+            treee->insertnode(nd);
+        }
+        cout<<"PROVIDE KEYWORD FOR SEARCH "<<endl;
+        cin>>keyword;
+        j=treee->search_url(keyword);
+        if(j!=0)
+        {
+            cout<<"F O  U N D "<<endl;
+        }
+        else
+        {
+            cout<<"N O T   F O U N D"<<endl;
+        }
+        cout<<"DELETE KEYWORD  "<<s<<endl;
+        treee->delete_node(treee->rootcather(),treee->rootcather(),keyword);
+        cout<<"SEARCH KEYWORD"<<s<<endl;
+        j=treee->search_url(keyword);
+        if(j!=0)
+        {
+            cout<<"F O U N D"<<endl;
+        }
+        else
+        {
+cout<<"N O T   F O U N D"<<endl;
+        }
+        }
